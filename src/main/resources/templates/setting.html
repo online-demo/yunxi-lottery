@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>setting</title>
+    <script type="text/javascript" src="style/jquery-1.8.0.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            function nowProcess() {
+                $.get("process", function (data) {
+                    if ($.isEmptyObject(data) || data.sort == 0) {
+                        $("#nowLevel").text("抽奖结束");
+                    }
+                    else {
+                        $("#nowLevel").text("当前是抽" + data.desc + "等奖,共抽" + data.num + "名");
+                    }
+
+                });
+            }
+
+            function showPerson(data) {
+                var html = "<ul>";
+                for (var i in data) {
+                    html += "<li>"
+                            + data[i]
+                            + ","
+                            + i
+                            + "</li>";
+                }
+                html += "</ul>";
+                $("#result").html(html);
+            }
+
+            $("#init").on("click", function () {
+                $.get("reset", {}, function (data) {
+                    $("#result").text(data);
+                    nowProcess();
+                })
+            });
+
+            function lottery() {
+                $.get("lottery", {}, function (data) {
+                    if (!$.isEmptyObject(data)) {
+                        showPerson(data);
+                        nowProcess();
+                    }
+                })
+            }
+
+            $("#lottery").on("click", lottery);
+            $("#unlottery").on("click", function () {
+                $.get("unlottery", {}, function (data) {
+                    nowProcess();
+                    $("#level").text('');
+                    $("#luckyPerson").trigger("click");
+                })
+            });
+
+            $("#luckyPerson").on("click", function () {
+                $.get("/lucky/" + $("#level").val(), {}, function (data) {
+                    if ($("#level").val() != '') {
+                        showPerson(data);
+                    }
+                    else {
+                        var html = "<ul>";
+                        for (var i in data) {
+                            html += "<li>"
+                            html += i;
+                            html += ":";
+                            var persons = data[i];
+                            for (var j in persons) {
+                                html += persons[j]
+                                        + ","
+                                        + j
+                                        + "   ";
+                            }
+                            html += "</li>";
+                        }
+                        html += "</ul>";
+                        $("#result").html(html);
+                    }
+
+                })
+            });
+
+            $("#person").on("click", function () {
+                $.get("person", {}, function (data) {
+                    showPerson(data);
+                })
+            });
+
+            $(document).keydown(function (e) {
+                if (!e) var e = window.event;
+                if (e.keyCode == 32) {
+                    lottery();
+                }
+            });
+
+            nowProcess();
+        });
+    </script>
+</head>
+<body>
+<h1 id="nowLevel"></h1>
+<button id="lottery">抽奖</button>
+<button id="unlottery">取消上次结果</button>
+<br/>
+<button id="init">初始化</button>
+<br/>
+<label for="level">等级：</label><input type="text" id="level"/>
+<button id="luckyPerson">中奖人员</button>
+<br/>
+<button id="person">全部人员</button>
+<div id="result"></div>
+
+</body>
+</html>
