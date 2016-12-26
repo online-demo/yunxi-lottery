@@ -25,6 +25,13 @@ import java.util.stream.IntStream;
 @SpringApplicationConfiguration(classes = ServerMain.class)
 public class TestLottery {
 
+    /**
+     张三:[
+        {中奖等级:1,第几次:1},
+        {中奖等级:1,第几次:2},
+        {中奖等级:1,第几次:3}
+     ]
+     */
     private Map<String, List<Map<String, Object>>> data = new HashMap<>();
 
     @Autowired
@@ -57,9 +64,6 @@ public class TestLottery {
                 data.put(name, maps);
             });
         });
-        Map<Long, String> max = lotteryService.getLuckyPersonByLevel(0);
-        System.out.println("TestLottery.lottery" + num);
-        Assert.assertEquals("范云", max.get(13506918060l));
     }
 
     @Test
@@ -88,5 +92,21 @@ public class TestLottery {
                     System.out.print(counter);
                     System.out.println();
                 });
+
+        // 检查重复
+        data.keySet().forEach(name->{
+            Map<String,Integer> check = new HashMap<>();
+            data.get(name).forEach(map -> {
+                Integer level = (Integer) map.get("level");
+                Integer seq = (Integer)map.get("seq");
+                Integer s = check.get(seq+name);
+                if(null != s){
+                    System.out.println("name:"+name+",level:"+level+",seq:"+seq);
+                }
+                else{
+                    check.put(seq+name, level);
+                }
+            });
+        });
     }
 }

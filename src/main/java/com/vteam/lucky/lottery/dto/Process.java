@@ -63,6 +63,6 @@ public class Process {
 
     @Override
     public String toString() {
-        return sort+","+level+","+level+","+num;
+        return sort+","+level+","+num+","+desc;
     }
 }

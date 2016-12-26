@@ -47,7 +47,7 @@ var nametxt = $('.name');
 var phonetxt = $('.phone');
 var pcount = xinm.length-1;//参加人数
 var runing = true;
-var td = 19;//内定中奖,从最小奖开始，共10个名额
+var td = 19;//中奖,从最小奖开始，共10个名额
 var num = 0;
 var t;
 //开始停止
@@ -62,7 +62,7 @@ function start() {
 		runing = true;
 		$('#btntxt').html('开始');
 		stop();
-		zd();//内定中奖
+		zd();//
 	}
 }
 //循环参加名单

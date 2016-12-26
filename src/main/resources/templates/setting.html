@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>setting</title>
@@ -34,7 +35,7 @@
                         $("#nowLevel").text("抽奖结束");
                     }
                     else {
-                        $("#nowLevel").text("当前是抽" + data.desc + "等奖,共抽" + data.num + "名");
+                        $("#nowLevel").text(data.sort+"当前是抽" + data.desc + "等奖,共抽" + data.num + "名");
                     }
 
                 });
@@ -81,7 +82,7 @@
                         var result = $("#result");
                         result.html('');
                         for (var i in data) {
-                            result.append("<h3>"+getCnLevel(i)+"</h3>");
+                            result.append("<h4>"+getCnLevel(i)+"</h4>");
                             var persons = data[i];
                             for (var j in persons) {
                                 result.append('<span class="btn">' + persons[j] + '-' + j + '</span>');
@@ -114,7 +115,8 @@
 
 <div class="panel panel-default">
     <div class="panel-heading"><h1 id="nowLevel"></h1></div>
-    <div class="panel-body">
+
+    <div class="panel-body" th:if="${isManager}">
         <button class="btn btn-success" id="lottery">抽奖</button>
         <button id="unlottery" class="btn btn-danger">取消上次结果</button>
         <button id="init" class="btn btn-primary">初始化</button>
@@ -125,7 +127,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>抽奖结果</h3>
+        <h3>抽奖结果</h3><br/>
         <div class="input-group" >
             <div class="input-group-addon">等级</div>
             <input class="form-control" type="text" id="level"/>

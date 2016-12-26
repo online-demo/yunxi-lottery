@@ -2,6 +2,8 @@ package com.vteam.lucky.lottery.controller;
 
 import com.vteam.lucky.lottery.core.LotteryService;
 import com.vteam.lucky.lottery.dto.Process;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,8 @@ import java.util.Map;
  */
 @Controller
 public class LotteryController {
+
+    private static final Log log = LogFactory.getLog(LotteryController.class);
 
     @Autowired
     private LotteryService lotteryService;

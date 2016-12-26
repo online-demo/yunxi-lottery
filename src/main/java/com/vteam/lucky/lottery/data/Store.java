@@ -2,15 +2,20 @@ package com.vteam.lucky.lottery.data;
 
 import com.vteam.lucky.lottery.dto.Person;
 import com.vteam.lucky.lottery.dto.Process;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import java.math.BigInteger;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.*;
 
-import static com.vteam.lucky.lottery.data.Operation.LUCKY_TAG;
-import static com.vteam.lucky.lottery.data.Operation.STEP_TAG;
+import static com.vteam.lucky.lottery.data.Operation.*;
 
 /**
  * @author li.cheng
@@ -19,6 +24,7 @@ import static com.vteam.lucky.lottery.data.Operation.STEP_TAG;
  */
 @Component
 public class Store {
+    private static final Log log = LogFactory.getLog(Store.class);
 
     private Map<Long, Person> person = new HashMap<>();
 
@@ -35,26 +41,59 @@ public class Store {
         Operation.setDataDir(dataPath);
 
         try {
-            List<String> personCsv = Files.readAllLines
-                    (Paths.get(Store.class.getResource("/person.csv").toURI()));
+            Path personPath = Paths.get(Store.class.getResource("/person.csv").toURI());
+            List<String> personCsv = Files.readAllLines(personPath);
             for (String line : personCsv) {
                 Person p = new Person(line);
                 person.put(p.getPhone(), p);
             }
 
-            List<String> processCsv = Files.readAllLines
-                    (Paths.get(Store.class.getResource("/process.csv").toURI()));
+            Path processPath = Paths.get(Store.class.getResource("/process.csv").toURI());
+            List<String> processCsv = Files.readAllLines(processPath);
             for (String line : processCsv) {
                 Process p = new Process(line);
                 process.put(p.getSort(), p);
             }
+
+            // 检测到配置文件发生变化时，重置数据
+            String savedPersonMD5 = Operation.load("", PERSON_TAG);
+            String savedProcessMD5 = Operation.load("", PROCESS_TAG);
+            String personMD5 = getFileMD5(personPath);
+            String processMD5 = getFileMD5(processPath);
+            if (StringUtils.isEmpty(savedPersonMD5)
+                    || StringUtils.isEmpty(savedProcessMD5)
+                    || !savedPersonMD5.equals(personMD5)
+                    || !savedProcessMD5.equals(processMD5)) {
+                log.info("检测到员工或流程配置发生变化,重置历史数据");
+                Operation.save(personMD5, PERSON_TAG);
+                Operation.save(processMD5, PROCESS_TAG);
+                reset();
+                return;
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
         step = Operation.load(step, STEP_TAG);
         lucky = Operation.loadLucky(lucky);
     }
+
+    private String getFileMD5(Path path) {
+        String strmd5 = null;
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(Files.readAllBytes(path));
+            BigInteger bi = new BigInteger(1, md5.digest());
+            strmd5 = bi.toString(16);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strmd5;
+    }
+
 
     public Collection<Person> getAllPerson() {
         return person.values();
@@ -73,6 +112,7 @@ public class Store {
      * 重新设置抽奖步骤
      */
     public void reset() {
+        log.info("重置抽奖步骤");
         step = 1;
         lucky = new HashMap<>();
         Operation.save(lucky, LUCKY_TAG);
@@ -172,7 +212,7 @@ public class Store {
     public Map<Long, Person> getUnselectedPerson() {
         Map<Long, Person> allPerson = new HashMap<>();
         allPerson.putAll(person);
-        lucky.values().forEach(set->set.forEach(p->allPerson.remove(p.getPhone())));
+        lucky.values().forEach(set -> set.forEach(p -> allPerson.remove(p.getPhone())));
         return allPerson;
     }
 

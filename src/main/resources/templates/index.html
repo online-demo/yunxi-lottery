@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<title>天逸抽奖</title>
-<link rel="stylesheet" type="text/css" href="style/style.css"/>
-    <script type="text/javascript" src="style/jquery-1.8.0.js.js"></script>
-    <script type="text/javascript" >
-        $(document).keydown(function(e){
-            if(!e) var e = window.event;
-            if(e.keyCode==32){
-                start();
-            }
+    <meta charset="UTF-8"/>
+    <title>天逸抽奖</title>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <script type="text/javascript" src="style/jquery-1.8.0.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var lottery = new Lottery();
+            lottery.loadProcess();
+            $(document).keydown(function (e) {
+                if (!e) e = window.event;
+                if (e.keyCode == 32) {
+                    lottery.start();
+                }
+                else if (e.keyCode == 13) {
+                    lottery.readyLottery();
+                }
+            });
         });
+
     </script>
 </head>
 <body class="body-bg">
 <div class="box">
-	<div class="jz">
-		<p><b class="animated bounceInDown" >抽奖活动</b></p>
+    <div class="jz">
+        <p><b class="animated bounceInDown" id="titile">抽奖活动</b></p>
         <br/>
         <div class="" style="width: 660px;margin: 0 auto;overflow: hidden">
-            <span class="phone animated bounceInLeft text-gradient masked">12345678910</span>
-            <span class="name animated bounceInRight text-gradient masked">天逸集团</span>
-        </div>
-	</div>
-    <div class="zjma animated fadeInDownBig " >
-       <!-- <p class="p1">中奖规则</p>-->
-        <div class="list">
-            <p>抽奖形式：手机号+姓名，空格键滚动随机抽奖。</p>
-            <p>奖项：特等奖：1名；一等奖：3名 ； 二等奖：5名 ； 三等奖：20名 ；四等奖：50名</p>
+            <span id="showPhone" class="phone animated bounceInLeft text-gradient masked">12345678910</span>
+            <span id="showName" class="name animated bounceInRight text-gradient masked">天逸集团</span>
         </div>
     </div>
-	<div class="zjmd animated zoomIn">
-		<p class="p1">中奖者名单</p>
-		<div class="list">
-			
-		</div>
-	</div>
+    <!--<div class="zjma animated fadeInDownBig ">-->
+        <!--&lt;!&ndash; <p class="p1">中奖规则</p>&ndash;&gt;-->
+        <!--<div class="list">-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="zjmd animated zoomIn">
+        <p id="level" class="p1">中奖者名单</p>
+        <div class="list" id="lucky">
+
+        </div>
+    </div>
     <div class="footer"></div>
     <ul class="bg-bubbles">
         <li></li>
@@ -52,8 +58,9 @@
     </ul>
 </div>
 
-<script type="text/javascript" src="style/jquery-1.8.0.js.js"></script>
+
 <script type="text/javascript" src="style/cj.js"></script>
+<script type="text/javascript" src="core/lottery.js"></script>
 
 </body>
 </html>

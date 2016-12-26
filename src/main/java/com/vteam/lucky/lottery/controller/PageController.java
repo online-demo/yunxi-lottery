@@ -2,6 +2,7 @@ package com.vteam.lucky.lottery.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,7 +20,11 @@ public class PageController {
     }
 
     @RequestMapping("/setting")
-    public String setting() {
+    public String setting(@RequestParam(required = false)String pwd,Model model) {
+        model.addAttribute("isManager",false);
+        if(!StringUtils.isEmpty(pwd) && pwd.equals("vteam123")){
+            model.addAttribute("isManager",true);
+        }
         return "/setting";
     }
 }

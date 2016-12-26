@@ -3,6 +3,8 @@ package com.vteam.lucky.lottery.core;
 import com.vteam.lucky.lottery.data.Store;
 import com.vteam.lucky.lottery.dto.Person;
 import com.vteam.lucky.lottery.dto.Process;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ import java.util.Set;
  */
 @Service
 public class LotteryService {
+
+    private static final Log log = LogFactory.getLog(LotteryService.class);
+
     @Autowired
     private Store store;
 
@@ -32,6 +37,7 @@ public class LotteryService {
         Map<Long, Integer> weightMap = new HashMap<>();
 
         Process process = store.getProcess();
+
 
         // 设置当前抽奖者名单
         personMap.values().stream().filter(person -> {
@@ -52,6 +58,7 @@ public class LotteryService {
             ret.put(phone, luckyPerson.getName());
             luckyPersons.add(luckyPerson);
         });
+        log.info("抽奖，当前步骤："+process+",中奖名单："+luckyPersons);
         store.nextStep(luckyPersons);
         return ret;
     }
@@ -94,6 +101,7 @@ public class LotteryService {
     }
 
     public boolean unlottery() {
+        log.info("撤销上一步抽奖结果");
         store.preStep();
         return true;
     }
