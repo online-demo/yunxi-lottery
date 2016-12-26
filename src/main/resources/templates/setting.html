@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8"/>
     <title>setting</title>
-    <script type="text/javascript" src="style/jquery-1.8.0.js"></script>
+    <link rel="stylesheet" href="dist/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="dist/js/jquery.min.js"></script>
+    <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
+
         $(function () {
+
+            function getCnLevel(level){
+                switch (level){
+                    case '0':
+                        return "特等奖";
+                    case '1':
+                        return "一等奖";
+                    case '2':
+                        return "二等奖";
+                    case '3':
+                        return "三等奖";
+                    case '4':
+                        return "四等奖";
+                    default:
+                        return "？？？";
+                }
+            }
 
             function nowProcess() {
                 $.get("process", function (data) {
@@ -20,16 +41,10 @@
             }
 
             function showPerson(data) {
-                var html = "<ul>";
+                $("#result").html('');
                 for (var i in data) {
-                    html += "<li>"
-                            + data[i]
-                            + ","
-                            + i
-                            + "</li>";
+                    $("#result").append('<span class="btn">' + data[i] + '-' + i + '</span>');
                 }
-                html += "</ul>";
-                $("#result").html(html);
             }
 
             $("#init").on("click", function () {
@@ -63,28 +78,22 @@
                         showPerson(data);
                     }
                     else {
-                        var html = "<ul>";
+                        var result = $("#result");
+                        result.html('');
                         for (var i in data) {
-                            html += "<li>"
-                            html += i;
-                            html += ":";
+                            result.append("<h3>"+getCnLevel(i)+"</h3>");
                             var persons = data[i];
                             for (var j in persons) {
-                                html += persons[j]
-                                        + ","
-                                        + j
-                                        + "   ";
+                                result.append('<span class="btn">' + persons[j] + '-' + j + '</span>');
                             }
-                            html += "</li>";
                         }
-                        html += "</ul>";
-                        $("#result").html(html);
                     }
 
                 })
             });
 
             $("#person").on("click", function () {
+                $("#level").val('');
                 $.get("person", {}, function (data) {
                     showPerson(data);
                 })
@@ -102,17 +111,37 @@
     </script>
 </head>
 <body>
-<h1 id="nowLevel"></h1>
-<button id="lottery">抽奖</button>
-<button id="unlottery">取消上次结果</button>
-<br/>
-<button id="init">初始化</button>
-<br/>
-<label for="level">等级：</label><input type="text" id="level"/>
-<button id="luckyPerson">中奖人员</button>
-<br/>
-<button id="person">全部人员</button>
-<div id="result"></div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h1 id="nowLevel"></h1></div>
+    <div class="panel-body">
+        <button class="btn btn-success" id="lottery">抽奖</button>
+        <button id="unlottery" class="btn btn-danger">取消上次结果</button>
+        <button id="init" class="btn btn-primary">初始化</button>
+    </div>
+</div>
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>抽奖结果</h3>
+        <div class="input-group" >
+            <div class="input-group-addon">等级</div>
+            <input class="form-control" type="text" id="level"/>
+            <span class="input-group-btn">
+                <button class="btn btn-default" id="luckyPerson" type="button">中奖人员</button>
+                <button class="btn btn-default" id="person">全部人员</button>
+            </span>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id="result">
+        </div>
+    </div>
+</div>
+
+
 
 </body>
 </html>
