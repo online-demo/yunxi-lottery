@@ -49,7 +49,8 @@
     <build>
         <finalName>天逸集团抽奖</finalName>
         <!--在生成jar时忽略resources目录下的配置文件，因为会通过assembly打包到运行根目录-->
-        <!--IDE里面运行时注释以下部分-->
+        <!--IDE里面运行时注释以下Resources部分-->
+
         <!--<resources>-->
             <!--<resource>-->
                 <!--<directory>src/main/resources</directory>-->

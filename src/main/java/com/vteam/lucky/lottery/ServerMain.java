@@ -1,11 +1,9 @@
 package com.vteam.lucky.lottery;
 
 import com.vteam.lucky.lottery.data.Store;
-import com.vteam.lucky.lottery.setting.ApplicationListenerStarted;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +22,7 @@ public class ServerMain {
     private Store store;
 
     @Bean
-    public String init(){
+    public String init() {
         store.init();
         return "";
     }

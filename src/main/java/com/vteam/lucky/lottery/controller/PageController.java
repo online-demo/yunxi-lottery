@@ -19,6 +19,16 @@ public class PageController {
         return "/index";
     }
 
+    @RequestMapping("/")
+    public String welcome() {
+        return "/index";
+    }
+
+    @RequestMapping("/main")
+    public String lucky() {
+        return "/main";
+    }
+
     @RequestMapping("/setting")
     public String setting(@RequestParam(required = false)String pwd,Model model) {
         model.addAttribute("isManager",false);

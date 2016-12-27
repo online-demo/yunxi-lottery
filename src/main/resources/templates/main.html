@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>幸运大抽奖</title>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <script type="text/javascript" src="dist/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var lottery = new Lottery();
+            lottery.loadProcess();
+            $(document).keydown(function (e) {
+                if (!e) e = window.event;
+                if (e.keyCode == 32) {
+                    lottery.start();
+                }
+                else if (e.keyCode == 13) {
+                    location.href="index";
+//                    lottery.ready();
+                }
+            });
+        });
+
+    </script>
+</head>
+<body class="body-bg">
+<div class="box">
+    <div class="jz">
+        <p><b class="animated bounceInDown" id="titile">抽奖活动</b></p>
+        <br/>
+        <div class="" style="width: 660px;margin: 0 auto;overflow: hidden">
+            <span id="showPhone" class="phone animated bounceInLeft text-gradient masked">12345678910</span>
+            <span id="showName" class="name animated bounceInRight text-gradient masked">天逸集团</span>
+        </div>
+    </div>
+    <div class="zjmd animated zoomIn">
+        <p id="level" class="p1">中奖者名单</p>
+        <div class="list" id="lucky">
+        </div>
+    </div>
+    <div class="footer"></div>
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+<script type="text/javascript" src="core/lottery.js"></script>
+
+</body>
+</html>
