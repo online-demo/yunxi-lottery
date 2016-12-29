@@ -11,6 +11,14 @@
     background-color: #71080D;
 }
 
+.body43-index-bg {
+    min-width: 1000px;
+    background-image: url("bg-start43.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-color: #71080D;
+}
+
 .body-bg {
     min-width: 1000px;
    background-image: url("bg.jpg");
@@ -32,7 +40,7 @@
     top: 25%;
     left: 0;
     right: 0;*/
-    margin-top: 130px;
+    margin-top: 100px;
 }
 
 .person {

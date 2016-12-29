@@ -1,5 +1,8 @@
 package com.vteam.lucky.lottery.controller;
 
+import com.vteam.lucky.lottery.core.LotteryService;
+import com.vteam.lucky.lottery.dto.Special;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PageController {
 
+    @Autowired
+    private LotteryService lotteryService;
+
     @RequestMapping("/index")
     public String index() {
         return "/index";
@@ -25,7 +31,12 @@ public class PageController {
     }
 
     @RequestMapping("/main")
-    public String lucky() {
+    public String main(Model model) {
+        Special special = lotteryService.getSpecial();
+        if(null != special){
+            model.addAttribute("award",special.getAward());
+            model.addAttribute("num",special.getNum());
+        }
         return "/main";
     }
 

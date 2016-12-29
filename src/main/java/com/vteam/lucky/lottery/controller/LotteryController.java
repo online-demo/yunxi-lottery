@@ -52,6 +52,16 @@ public class LotteryController {
     }
 
     @ResponseBody
+    @RequestMapping("/createSpecial")
+    public boolean createSpecial(
+            @RequestParam(value = "award", required = false) String award,
+            @RequestParam(value = "num", defaultValue = "1", required = false) Integer num
+    ) {
+        lotteryService.createSpecial(award, num);
+        return true;
+    }
+
+    @ResponseBody
     @RequestMapping("/replaced")
     public Map<Long, String> replaced(
             @RequestParam(value = "award") String award,

@@ -2,10 +2,8 @@ package com.vteam.lucky.lottery.core;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.IntStream;
 
 /**
@@ -114,10 +112,27 @@ public class BuildPerson {
     }
 
     public static void main(String[] args) throws Exception {
-        List<String> persons = new ArrayList<>();
-        IntStream.range(0, 500).forEach(value -> {
-            persons.add(getChineseName() + "," + getTel() + ",-1,1");
-        });
-        Files.write(Paths.get(BuildPerson.class.getResource("/person.csv").toURI()), persons);
+//        List<String> persons = new ArrayList<>();
+//        IntStream.range(0, 500).forEach(value -> {
+//            persons.add(getChineseName() + "," + getTel() + ",-1,1");
+//        });
+//        Files.write(Paths.get(BuildPerson.class.getResource("/person.csv").toURI()), persons);
+        Queue<String> queue = new LinkedBlockingQueue<>();
+        queue.add("a");
+        queue.add("b");
+        queue.add("ac");
+        System.out.println("queue.size() = " + queue.size());
+        String poll = queue.poll();
+
+        System.out.println(poll+" = " + queue.size());
+        poll = queue.poll();
+
+        System.out.println(poll+" = " + queue.size());
+        poll = queue.poll();
+
+        System.out.println(poll+" = " + queue.size());
+        poll = queue.poll();
+
+        System.out.println(poll+" = " + queue.size());
     }
 }

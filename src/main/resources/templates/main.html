@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>幸运大抽奖</title>
     <link rel="stylesheet" type="text/css" href="style/style.css"/>
     <script type="text/javascript" src="dist/js/jquery.min.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
+        var award = [[${award}]];
+        var num = [[${num}]];
+        var lottery;
+
+        if(award){
+            /*<![CDATA[*/
+            window.open("award?award="+award+"&num="+num);
+            /*]]>*/
+        }
+
         $(function () {
-            var lottery = new Lottery();
+            lottery = new Lottery();
             lottery.loadProcess();
             $(document).keydown(function (e) {
                 if (!e) e = window.event;

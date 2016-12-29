@@ -125,9 +125,9 @@
               $("#createAward").on("click", function () {
                   var num = $("#num").val() || 1;
                   var award = $("#award").val() || '特别奖';
-                  /*<![CDATA[*/
-                  window.open("award?award="+award+"&num="+num);
-                  /*]]>*/
+                  $.get("createSpecial", {award:award,num:num}, function (data) {
+                      alert(data);
+                  })
             });
 
 
@@ -159,7 +159,7 @@
     <div class="panel-body">
         <div class="input-group" >
             <div class="input-group-addon">奖项名称</div>
-            <input class="form-control" type="text" id="award"/>
+            <input class="form-control" type="text" id="award" value="特别奖"/>
             <div class="input-group-addon">数量</div>
             <input class="form-control" type="number" id="num" value="1"  min="1"/>
             <span class="input-group-btn">

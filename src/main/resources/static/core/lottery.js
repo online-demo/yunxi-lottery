@@ -150,7 +150,7 @@ function Lottery() {
             var num = Math.floor(Math.random() * (personNum - 1));
             var phone = arrPhone[num];
             var name = me.person[phone];
-            $("#info").html(phone+" "+name);
+            $("#info").html(phone + " " + name);
         }
 
         looping = true;
@@ -224,28 +224,30 @@ function Lottery() {
         var size = phone.length;
         var i = 0;
         $('#lucky').html("");
-        $("#info").html(phone[0]+" "+person[phone[0]]);
+        $("#info").html(phone[0] + " " + person[phone[0]]);
         function addLucky() {
             var tPhone = phone[i++];
             $('#lucky').append(
                 "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>");
-            $("#info").html(tPhone+" "+person[tPhone]);
+            $("#info").html(tPhone + " " + person[tPhone]);
 
             if (i >= size) {
                 clearInterval(t);
                 t = 0;
                 showing = false;
             }
+            console.log("sendSMS:"+tPhone+","+person[tPhone]+","+me.getCnLevel(me.process.level));
+            //me.sendSms(tPhone,person[tPhone],me.getCnLevel(me.process.level));
         }
 
         t = setInterval(addLucky, 1000);
     }
 
-    $("#lucky").on('dblclick','.LuckyPerson',function () {
+    $("#lucky").on('dblclick', '.LuckyPerson', function () {
         var btn = $(this);
         var phone = btn.attr('title');
         /*<![CDATA[*/
-        window.open("award?type=2&award="+me.process.level+"&phone="+phone+"&name="+btn.html());
+        window.open("award?type=2&award=" + me.process.level + "&phone=" + phone + "&name=" + btn.html());
         /*]]>*/
     });
 
@@ -259,6 +261,18 @@ function Lottery() {
             personNum = arrPhone.length;
         })
     }
+
+    this.sendSms = function (phone, name, level) {
+        var content = "尊敬的" + name + ",恭喜您荣获天逸金融服务集团2017年尾牙晚宴" + me.getCnLevel(level) + "【天逸财金】";
+        $.get("http://115.29.242.32:8888/sms.aspx", {
+            action: "send",
+            userid: "",
+            account: "",
+            password: "",
+            mobile: phone,
+            content: content
+        });
+    };
 
     /**
      * 初始化时自动载入

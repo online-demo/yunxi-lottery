@@ -3,15 +3,14 @@ package com.vteam.lucky.lottery.core;
 import com.vteam.lucky.lottery.data.Store;
 import com.vteam.lucky.lottery.dto.Person;
 import com.vteam.lucky.lottery.dto.Process;
+import com.vteam.lucky.lottery.dto.Special;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author li.cheng
@@ -91,6 +90,7 @@ public class LotteryService {
 
     /**
      * 替换中奖名单
+     *
      * @param award
      * @param beforePhone
      * @return
@@ -99,7 +99,7 @@ public class LotteryService {
         Map<Long, Person> personMap = store.getUnselectedPerson();
 
         Map<Long, Integer> weightMap = new HashMap<>();
-        if(award instanceof Integer){
+        if (award instanceof Integer) {
             int settingLevel = (int) award;
             // 设置当前抽奖者名单
             personMap.values().stream().filter(person -> {
@@ -112,13 +112,12 @@ public class LotteryService {
                     person.getLevel() == settingLevel ? person.getWeight() :
                             (person.getLevel() == -1 ? person.getWeight() : 1)
             ));
-        }
-        else{
+        } else {
             personMap.values().forEach(person -> weightMap.put(person.getPhone(), 1));
         }
 
-        if(weightMap.isEmpty()){
-           throw new RuntimeException("找不到对应的奖项");
+        if (weightMap.isEmpty()) {
+            throw new RuntimeException("找不到对应的奖项");
         }
         WeightRandom<Long, Integer> weight = new WeightRandom<>();
         Map<Long, String> ret = new HashMap<>();
@@ -128,8 +127,8 @@ public class LotteryService {
             ret.put(phone, luckyPerson.getName());
             luckyPersons.add(luckyPerson);
         });
-        log.info("替换中奖者:"+beforePhone+"，当前奖项：" + award + ",中奖名单：" + luckyPersons);
-        luckyPersons.forEach(person -> store.replaced(beforePhone,person.getPhone()));
+        log.info("替换中奖者:" + beforePhone + "，当前奖项：" + award + ",中奖名单：" + luckyPersons);
+        luckyPersons.forEach(person -> store.replaced(beforePhone, person.getPhone()));
         return ret;
     }
 
@@ -174,5 +173,13 @@ public class LotteryService {
         log.info("撤销上一步抽奖结果");
         store.preStep();
         return true;
+    }
+
+    public void createSpecial(String award, int num) {
+        store.createSpecial(award, num);
+    }
+
+    public Special getSpecial() {
+        return store.getSpecial();
     }
 }

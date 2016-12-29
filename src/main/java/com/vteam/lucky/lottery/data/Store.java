@@ -2,6 +2,7 @@ package com.vteam.lucky.lottery.data;
 
 import com.vteam.lucky.lottery.dto.Person;
 import com.vteam.lucky.lottery.dto.Process;
+import com.vteam.lucky.lottery.dto.Special;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.vteam.lucky.lottery.data.Operation.*;
 
@@ -36,6 +38,9 @@ public class Store {
     private Map<Integer, Set<Person>> lucky = new HashMap<>();
     // 流程之外的特别中奖人员列表
     private Map<String, Set<Person>> specialLuck = new HashMap<>();
+
+    // 特别奖项设置队列
+    private Queue<Special> queue = new LinkedBlockingQueue<>();
 
     public Store() {
         Operation.setDataDir(System.getProperty("user.home") + "/.lottery");
@@ -118,6 +123,7 @@ public class Store {
         step = 1;
         lucky = new HashMap<>();
         specialLuck = new HashMap<>();
+        queue.clear();
         Operation.save(lucky, LUCKY_TAG);
         Operation.save(specialLuck, SPECIAL_LUCKY_TAG);
         Operation.save(step, STEP_TAG);
@@ -351,6 +357,13 @@ public class Store {
         return step.equals(getMaxStep()) && null != lucky.get(step);
     }
 
+    public void createSpecial(String award, int num) {
+        queue.add(new Special(award, num));
+    }
+
+    public Special getSpecial() {
+        return queue.poll();
+    }
 
     private Collection<Integer> getSort(Integer level) {
         Collection<Integer> sorts = new ArrayList<>();
