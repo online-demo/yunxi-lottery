@@ -37,10 +37,10 @@
 
 .person {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 4px 10px;
     margin-bottom: 0;
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 17px;
+    font-weight: 700;
     line-height: 1.42857143;
     text-align: center;
     white-space: nowrap;
@@ -48,6 +48,7 @@
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
+    color: #f7e124;
 }
 
 .result{
@@ -84,10 +85,10 @@
     height: 80px;*/
     display:block;
     margin: 20px 0;
-    text-align: left;
+    /*text-align: left;*/
     color: #f78a10;
     font-weight: 700;
-    float: left;
+    /*float: left;*/
 }
 
 .text-gradient {

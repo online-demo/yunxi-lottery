@@ -12,8 +12,20 @@
 
         $(function () {
 
+            var nowProcessData;
+
             function getCnLevel(level){
-                switch (level){
+                switch (level) {
+                    case 0:
+                        return "特等奖";
+                    case 1:
+                        return "一等奖";
+                    case 2:
+                        return "二等奖";
+                    case 3:
+                        return "三等奖";
+                    case 4:
+                        return "四等奖";
                     case '0':
                         return "特等奖";
                     case '1':
@@ -25,26 +37,28 @@
                     case '4':
                         return "四等奖";
                     default:
-                        return "？？？";
+                        return level;
                 }
             }
 
             function nowProcess() {
                 $.get("process", function (data) {
                     if ($.isEmptyObject(data) || data.sort == 0) {
+                        nowProcessData = undefined;
                         $("#nowLevel").text("抽奖结束");
                     }
                     else {
+                        nowProcessData = data;
                         $("#nowLevel").text(data.sort+"当前是抽" + data.desc + "等奖,共抽" + data.num + "名");
                     }
 
                 });
             }
 
-            function showPerson(data) {
+            function showPerson(data,level) {
                 $("#result").html('');
                 for (var i in data) {
-                    $("#result").append('<span class="btn">' + data[i] + '-' + i + '</span>');
+                    $("#result").append('<span class="btn" data="'+level+'">' + data[i] + '-' + i + '</span>');
                 }
             }
 
@@ -58,7 +72,7 @@
             function lottery() {
                 $.get("lottery", {}, function (data) {
                     if (!$.isEmptyObject(data)) {
-                        showPerson(data);
+                        showPerson(data,nowProcessData.level);
                         nowProcess();
                     }
                 })
@@ -76,7 +90,7 @@
             $("#luckyPerson").on("click", function () {
                 $.get("/lucky/" + $("#level").val(), {}, function (data) {
                     if ($("#level").val() != '') {
-                        showPerson(data);
+                        showPerson(data,$("#level").val());
                     }
                     else {
                         var result = $("#result");
@@ -85,12 +99,20 @@
                             result.append("<h4>"+getCnLevel(i)+"</h4>");
                             var persons = data[i];
                             for (var j in persons) {
-                                result.append('<span class="btn">' + persons[j] + '-' + j + '</span>');
+                                result.append('<span class="btn" data="'+i+'">' + persons[j] + '-' + j + '</span>');
                             }
                         }
                     }
 
                 })
+            });
+
+            $("#result").on('click','.btn',function () {
+                var btn = $(this);
+                var person = btn.html().split("-");
+                /*<![CDATA[*/
+                window.open("award?type=2&award="+btn.attr('data')+"&phone="+person[1]+"&name="+person[0]);
+                /*]]>*/
             });
 
             $("#person").on("click", function () {
@@ -99,6 +121,16 @@
                     showPerson(data);
                 })
             });
+
+              $("#createAward").on("click", function () {
+                  var num = $("#num").val() || 1;
+                  var award = $("#award").val() || '特别奖';
+                  /*<![CDATA[*/
+                  window.open("award?award="+award+"&num="+num);
+                  /*]]>*/
+            });
+
+
 
             $(document).keydown(function (e) {
                 if (!e) var e = window.event;
@@ -122,6 +154,20 @@
         <button id="init" class="btn btn-primary">初始化</button>
     </div>
 </div>
+<div class="panel panel-default" th:if="${isManager}">
+    <div class="panel-heading"><h3>增加额外奖项</h3></div>
+    <div class="panel-body">
+        <div class="input-group" >
+            <div class="input-group-addon">奖项名称</div>
+            <input class="form-control" type="text" id="award"/>
+            <div class="input-group-addon">数量</div>
+            <input class="form-control" type="number" id="num" value="1"  min="1"/>
+            <span class="input-group-btn">
+                <button class="btn btn-success" id="createAward">添加</button>
+            </span>
+        </div>
+    </div>
+</div>
 
 
 
@@ -132,8 +178,8 @@
             <div class="input-group-addon">等级</div>
             <input class="form-control" type="text" id="level"/>
             <span class="input-group-btn">
-                <button class="btn btn-default" id="luckyPerson" type="button">中奖人员</button>
-                <button class="btn btn-default" id="person">全部人员</button>
+                <button class="btn btn-primary" id="luckyPerson" type="button">中奖人员</button>
+                <button class="btn btn-success" id="person">全部人员</button>
             </span>
         </div>
     </div>

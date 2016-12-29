@@ -23,6 +23,7 @@ public class Operation {
     public static final String PERSON_TAG = "/person";
 
     public static final String LUCKY_TAG = "/lucky";
+    public static final String SPECIAL_LUCKY_TAG = "/special_luck";
     public static final String STEP_TAG = "/step";
 
     private static String dataDir = "E:/VTeamLottery";
@@ -62,6 +63,33 @@ public class Operation {
             } else {
                 createFiles(path);
                 save(dft, LUCKY_TAG);
+                return dft;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static Map<String, Set<Person>> loadSpecialLuck(Map<String, Set<Person>> dft) {
+        Map<String, Set<Person>> ret = new HashMap<>();
+        try {
+            Path path = Paths.get(dataDir + SPECIAL_LUCKY_TAG);
+            if (Files.exists(path)) {
+
+                HashMap<String, JSONArray> o = JSONObject.parseObject(Files.readAllBytes(path), HashMap.class);
+                o.keySet().forEach(sort -> {
+                    JSONArray jsonArray = o.get(sort);
+                    Set<Person> persons = new HashSet<>();
+                    jsonArray.forEach(map -> {
+                        persons.add(map2person(map));
+                    });
+                    ret.put(sort, persons);
+                });
+
+            } else {
+                createFiles(path);
+                save(dft, SPECIAL_LUCKY_TAG);
                 return dft;
             }
         } catch (IOException e) {

@@ -40,7 +40,7 @@ function Lottery() {
             case '4':
                 return "四等奖";
             default:
-                return "？？？";
+                return level;
         }
     };
 
@@ -60,19 +60,60 @@ function Lottery() {
     };
 
     /**
+     * 特殊的抽奖步骤
+     * @param type = 1 时为替换已经中奖人员
+     *        type = 2 时为额外的抽奖
+     * @param award 特殊奖项名称
+     * @param num 抽奖个数
+     */
+    this.specialLottery = function (award, num) {
+        if (isReady) {
+            if (!looping) {
+                loopShow();
+            }
+            else {
+                $.get("specialLottery", {
+                    award: award,
+                    num: num
+                }, function (data) {
+                    stopLoop();
+                    if (!$.isEmptyObject(data)) {
+                        printLuckyPerson(data);
+                    }
+                })
+            }
+        }
+    };
+
+    this.replaced = function (award, phone) {
+        if (isReady) {
+            if (!looping) {
+                loopShow();
+            }
+            else {
+                $.get("replaced", {
+                    award: award,
+                    phone: phone
+                }, function (data) {
+                    stopLoop();
+                    if (!$.isEmptyObject(data)) {
+                        printLuckyPerson(data);
+                    }
+                })
+            }
+        }
+    };
+
+    /**
      * 初始化信息,准备抽奖
      * 防止多次触发抽奖操作
      */
-    me.ready = function () {
+    me.ready = function (info) {
         if (!showing && !isReady) {
             isReady = true;
-            me.loadProcess(function () {
-                $("#showPhone").html("12345678910");
-                $("#showName").html("天逸集团");
-                $('#lucky').html("");
-            });
+            $("#info").html(info);
+            $('#lucky').html("");
         }
-
     };
 
     /**
@@ -86,8 +127,10 @@ function Lottery() {
             if ($.isEmptyObject(data) || data.sort == 0) {
                 titile.html("抽奖完成");
                 showLuckyPersonList();
-                me.start = function () {};
-                me.ready = function () {};
+                me.start = function () {
+                };
+                me.ready = function () {
+                };
             }
             else {
                 titile.html(me.getCnLevel(data.level));
@@ -102,12 +145,12 @@ function Lottery() {
      * 开始滚动显示人员信息
      */
     function loopShow() {
+        $('#lucky').html("");
         function start() {
             var num = Math.floor(Math.random() * (personNum - 1));
             var phone = arrPhone[num];
             var name = me.person[phone];
-            $("#showPhone").html(phone);
-            $("#showName").html(name);
+            $("#info").html(phone+" "+name);
         }
 
         looping = true;
@@ -129,7 +172,9 @@ function Lottery() {
     function lottery(fn) {
         $.get("lottery", {}, function (data) {
             if (!$.isEmptyObject(data)) {
-                if(fn){fn(data)}
+                if (fn) {
+                    fn(data)
+                }
                 printLuckyPerson(data);
             }
         })
@@ -148,16 +193,16 @@ function Lottery() {
             for (var i in data) {
                 result.append("<h2 class='sh4'>" + me.getCnLevel(i) + "</h2>");
                 var persons = data[i];
-                if(Object.keys(persons).length < 10){
+                if (Object.keys(persons).length < 10) {
                     var centerSpan = $('<div class="result" style="text-align: center"></div>');
                     for (var j in persons) {
-                        centerSpan.append('<span title="'+j+'" class="person masked">' + persons[j] + '</span>');
+                        centerSpan.append('<span title="' + j + '" class="person">' + persons[j] + '</span>');
                     }
                     result.append(centerSpan);
                 }
-                else{
+                else {
                     for (var j in persons) {
-                        result.append('<span title="'+j+'" class="person masked">' + persons[j] + '</span>');
+                        result.append('<span title="' + j + '" class="person">' + persons[j] + '</span>');
                     }
                 }
 
@@ -179,14 +224,12 @@ function Lottery() {
         var size = phone.length;
         var i = 0;
         $('#lucky').html("");
-        $("#showPhone").html(phone[0]);
-        $("#showName").html(person[phone[0]]);
+        $("#info").html(phone[0]+" "+person[phone[0]]);
         function addLucky() {
             var tPhone = phone[i++];
             $('#lucky').append(
-                "<span class='phone masked' title='"+tPhone+"' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>");
-            $("#showPhone").html(tPhone);
-            $("#showName").html(person[tPhone]);
+                "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>");
+            $("#info").html(tPhone+" "+person[tPhone]);
 
             if (i >= size) {
                 clearInterval(t);
@@ -197,6 +240,14 @@ function Lottery() {
 
         t = setInterval(addLucky, 1000);
     }
+
+    $("#lucky").on('dblclick','.LuckyPerson',function () {
+        var btn = $(this);
+        var phone = btn.attr('title');
+        /*<![CDATA[*/
+        window.open("award?type=2&award="+me.process.level+"&phone="+phone+"&name="+btn.html());
+        /*]]>*/
+    });
 
     /**
      * 载入所有人员列表

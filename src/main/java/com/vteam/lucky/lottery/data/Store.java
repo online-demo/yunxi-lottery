@@ -4,7 +4,6 @@ import com.vteam.lucky.lottery.dto.Person;
 import com.vteam.lucky.lottery.dto.Process;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,17 +27,18 @@ public class Store {
 
     private Map<Long, Person> person = new HashMap<>();
 
+    // {sort}:{person}
     private Map<Integer, Process> process = new HashMap<>();
 
     private Integer step = 1;
 
+    // {sort}:[{person},{person}]
     private Map<Integer, Set<Person>> lucky = new HashMap<>();
+    // 流程之外的特别中奖人员列表
+    private Map<String, Set<Person>> specialLuck = new HashMap<>();
 
-    @Value("${vteam.lottery.data.path}")
-    private String dataPath;
-
-    public void init() {
-        Operation.setDataDir(dataPath);
+    public Store() {
+        Operation.setDataDir(System.getProperty("user.home") + "/.lottery");
 
         try {
             Path personPath = Paths.get(Store.class.getResource("/person.csv").toURI());
@@ -50,8 +50,9 @@ public class Store {
 
             Path processPath = Paths.get(Store.class.getResource("/process.csv").toURI());
             List<String> processCsv = Files.readAllLines(processPath);
+            int sort = 1;
             for (String line : processCsv) {
-                Process p = new Process(line);
+                Process p = new Process((sort++) + "," + line);
                 process.put(p.getSort(), p);
             }
 
@@ -79,6 +80,7 @@ public class Store {
 
         step = Operation.load(step, STEP_TAG);
         lucky = Operation.loadLucky(lucky);
+        specialLuck = Operation.loadSpecialLuck(specialLuck);
     }
 
     private String getFileMD5(Path path) {
@@ -115,8 +117,11 @@ public class Store {
         log.info("重置抽奖步骤");
         step = 1;
         lucky = new HashMap<>();
+        specialLuck = new HashMap<>();
         Operation.save(lucky, LUCKY_TAG);
+        Operation.save(specialLuck, SPECIAL_LUCKY_TAG);
         Operation.save(step, STEP_TAG);
+
     }
 
     /**
@@ -171,17 +176,25 @@ public class Store {
     /**
      * 获取指定等级获奖人员列表
      *
-     * @param level
+     * @param award
      * @return
      */
-    public Collection<Person> getLuckyPerson(int level) {
+    public Collection<Person> getLuckyPerson(Object award) {
         Collection<Person> persons = new ArrayList<>();
-        getSort(level).forEach(sort -> {
-            Set<Person> set = lucky.get(sort);
+        if (award instanceof Integer) {
+            getSort((Integer) award).forEach(sort -> {
+                Set<Person> set = lucky.get(sort);
+                if (null != set) {
+                    persons.addAll(set);
+                }
+            });
+        } else {
+            Set<Person> set = specialLuck.get(award.toString());
             if (null != set) {
                 persons.addAll(set);
             }
-        });
+        }
+
         return persons;
     }
 
@@ -190,19 +203,127 @@ public class Store {
      *
      * @return
      */
-    public Map<Integer, Set<Person>> getLuckyPerson() {
-        Map<Integer, Set<Person>> luckyPersons = new HashMap<>();
-        lucky.keySet().forEach(sort -> {
+    public Map<String, Set<Person>> getLuckyPerson() {
+        Map<String, Set<Person>> luckyPersons = new HashMap<>();
+        lucky.keySet().stream().filter(sort -> sort > 0).forEach(sort -> {
             int level = process.get(sort).getLevel();
-            Set<Person> personSet = luckyPersons.get(level);
+            String award = level + "";
+            Set<Person> personSet = luckyPersons.get(award);
             if (null == personSet) {
                 personSet = new HashSet<>();
             }
             personSet.addAll(lucky.get(sort));
-            luckyPersons.put(level, personSet);
+            luckyPersons.put(award, personSet);
+        });
+        specialLuck.keySet().stream().filter(award -> !award.startsWith("-")).forEach(award -> {
+            Set<Person> personSet = luckyPersons.get(award);
+            if (null == personSet) {
+                personSet = new HashSet<>();
+            }
+            personSet.addAll(specialLuck.get(award));
+            luckyPersons.put(award, personSet);
         });
         return luckyPersons;
     }
+
+    /**
+     * 替换中奖者
+     *
+     * @param beforePhone
+     * @param afterPhone
+     */
+    public void replaced(Long beforePhone, Long afterPhone) {
+        Integer replacedSort = null;
+        Integer foundSort = null;
+        Set<Person> replaced = null;
+        Set<Person> base = null;
+        boolean hasFound = false;
+        Iterator<Integer> sorts = lucky.keySet().iterator();
+        if(!lucky.isEmpty()){
+            while (sorts.hasNext() && !hasFound){
+                foundSort = sorts.next();
+                base = lucky.get(foundSort);
+                for (Person p : base) {
+                    if (p.getPhone().equals(beforePhone)) {
+                        base.remove(p);
+                        replacedSort = -foundSort;
+                        replaced = lucky.get(replacedSort);
+                        if (null == replaced) {
+                            replaced = new HashSet<>();
+                        }
+                        replaced.add(p);
+                        hasFound = true;
+                        base.add(person.get(afterPhone));
+                        break;
+                    }
+                }
+
+            }
+
+            if(null != foundSort && null != replacedSort){
+                lucky.put(replacedSort, replaced);
+                lucky.put(foundSort, base);
+                Operation.save(lucky, LUCKY_TAG);
+            }
+        }
+
+        if(!specialLuck.isEmpty()){
+            String replacedKey = "";
+            String foundKey = "";
+            replaced = null;
+            base = null;
+            hasFound = false;
+            // 替换特别奖项中奖人员，在中奖名单中奖项名前面加“-”区分
+            Iterator<String> awards = specialLuck.keySet().iterator();
+            while (awards.hasNext() && !hasFound){
+                foundKey = awards.next();
+                base = specialLuck.get(foundKey);
+                for (Person p : base) {
+                    if (p.getPhone().equals(beforePhone)) {
+                        base.remove(p);
+                        replacedKey = "-" + foundKey;
+                        replaced = specialLuck.get(replacedKey);
+                        if (null == replaced) {
+                            replaced = new HashSet<>();
+                        }
+                        replaced.add(p);
+                        base.add(person.get(afterPhone));
+                        hasFound = true;
+                        break;
+                    }
+                }
+
+            }
+
+            if(null != replaced){
+                specialLuck.put(replacedKey, replaced);
+                specialLuck.put(foundKey, base);
+                Operation.save(specialLuck, SPECIAL_LUCKY_TAG);
+            }
+        }
+
+
+
+
+
+    }
+
+    /**
+     * 特别奖项数据保存
+     *
+     * @param award
+     * @param luckPerson
+     */
+    public void specialAward(String award, Set<Person> luckPerson) {
+        Set<Person> persons = specialLuck.get(award);
+        if (null == persons) {
+            persons = new HashSet<>();
+        }
+        persons.addAll(luckPerson);
+        specialLuck.put(award, persons);
+        Operation.save(specialLuck, SPECIAL_LUCKY_TAG);
+    }
+
 
     /**
      * 获取未被抽中的人员名单
@@ -213,6 +334,7 @@ public class Store {
         Map<Long, Person> allPerson = new HashMap<>();
         allPerson.putAll(person);
         lucky.values().forEach(set -> set.forEach(p -> allPerson.remove(p.getPhone())));
+        specialLuck.values().forEach(set -> set.forEach(p -> allPerson.remove(p.getPhone())));
         return allPerson;
     }
 
@@ -226,7 +348,7 @@ public class Store {
     }
 
     public boolean isDone() {
-        return lucky.size() == getStep();
+        return step.equals(getMaxStep()) && null != lucky.get(step);
     }
 
 

@@ -109,4 +109,23 @@ public class TestLottery {
             });
         });
     }
+
+    @Test
+    public void changeLuckyPerson(){
+//        init();
+//        lottery(1);
+        store.replaced(15204767993l,15702783372l);
+        store.replaced(13707585579l,15702807285l);
+    }
+
+    @Test
+    public void specialLottery(){
+        lotteryService.specialLottery("abc", 10);
+        lotteryService.specialLottery("1235555", 10);
+        lotteryService.specialLottery("哈哈哈", 10);
+        lotteryService.specialLottery("$@&#*$&#*$", 10);
+        lotteryService.specialLottery("……&*%……￥……&￥#", 10);
+        lotteryService.specialLottery("       ", 10);
+
+    }
 }

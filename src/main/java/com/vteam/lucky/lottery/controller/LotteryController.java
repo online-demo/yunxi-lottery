@@ -2,12 +2,14 @@ package com.vteam.lucky.lottery.controller;
 
 import com.vteam.lucky.lottery.core.LotteryService;
 import com.vteam.lucky.lottery.dto.Process;
+import com.vteam.lucky.lottery.utils.Strings;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -37,6 +39,33 @@ public class LotteryController {
     }
 
     @ResponseBody
+    @RequestMapping("/specialLottery")
+    public Map<Long, String> specialLottery(
+            @RequestParam(value = "award", required = false) String award,
+            @RequestParam(value = "num", defaultValue = "1", required = false) Integer num
+    ) {
+        try {
+            return lotteryService.specialLottery(award, num);
+        } catch (RuntimeException e) {
+        }
+        return new HashMap<>();
+    }
+
+    @ResponseBody
+    @RequestMapping("/replaced")
+    public Map<Long, String> replaced(
+            @RequestParam(value = "award") String award,
+            @RequestParam(value = "phone") Long phone
+    ) {
+        try {
+            return lotteryService.replaced(Strings.isNumeric(award) ? Integer.valueOf(award) : award
+                    , phone);
+        } catch (RuntimeException e) {
+        }
+        return new HashMap<>();
+    }
+
+    @ResponseBody
     @RequestMapping("/unlottery")
     public Boolean unlottery() {
         return lotteryService.unlottery();
@@ -57,13 +86,13 @@ public class LotteryController {
     @ResponseBody
     @RequestMapping("/lucky/{level}")
     public Map<Long, String> getLuckyPersonByLevel(
-            @PathVariable(value = "level") Integer level) {
-        return lotteryService.getLuckyPersonByLevel(level);
+            @PathVariable(value = "level") String level) {
+        return lotteryService.getLuckyPersonByLevel(Strings.isNumeric(level) ? Integer.valueOf(level) : level);
     }
 
     @ResponseBody
     @RequestMapping("/lucky")
-    public Map<Integer, Map<Long, String>> getLuckyPerson() {
+    public Map<String, Map<Long, String>> getLuckyPerson() {
         return lotteryService.getLuckyPerson();
     }
 

@@ -1,9 +1,5 @@
 spring:
   thymeleaf:
     cache: false
-vteam:
-  lottery:
-    data:
-      path: "E:/VTeamLottery/"
 server:
   port: 80

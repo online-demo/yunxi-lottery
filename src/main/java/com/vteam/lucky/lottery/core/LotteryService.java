@@ -38,12 +38,12 @@ public class LotteryService {
 
         Process process = store.getProcess();
 
-
         // 设置当前抽奖者名单
         personMap.values().stream().filter(person -> {
             // 过滤设置了指定级别人员名单
             int level = person.getLevel();
-            return level == -1 || level == process.getLevel();
+            // 权重小于0的即为不参与抽奖的
+            return person.getWeight() > 0 && (level == -1 || level == process.getLevel());
         }).forEach(person -> weightMap.put(person.getPhone(),
                 // 设置了指定级别增权重的人员在其它级别使用最低权重
                 person.getLevel() == process.getLevel() ? person.getWeight() :
@@ -58,14 +58,84 @@ public class LotteryService {
             ret.put(phone, luckyPerson.getName());
             luckyPersons.add(luckyPerson);
         });
-        log.info("抽奖，当前步骤："+process+",中奖名单："+luckyPersons);
+        log.info("抽奖，当前步骤：" + process + ",中奖名单：" + luckyPersons);
         store.nextStep(luckyPersons);
         return ret;
     }
 
-    public Map<Long, String> getLuckyPersonByLevel(Integer level) {
+    /**
+     * 特别奖项抽奖
+     *
+     * @param award
+     * @param num
+     * @return
+     * @throws RuntimeException
+     */
+    public Map<Long, String> specialLottery(String award, int num) throws RuntimeException {
+        Map<Long, Person> personMap = store.getUnselectedPerson();
+        Map<Long, Integer> weightMap = new HashMap<>();
+        // 设置当前抽奖者名单,权重相等
+        personMap.values().forEach(person -> weightMap.put(person.getPhone(), 1));
+        WeightRandom<Long, Integer> weight = new WeightRandom<>();
         Map<Long, String> ret = new HashMap<>();
-        store.getLuckyPerson(level).forEach(person -> {
+        Set<Person> luckyPersons = new HashSet<>();
+        weight.random(weightMap, num).forEach(phone -> {
+            Person luckyPerson = personMap.get(phone);
+            ret.put(phone, luckyPerson.getName());
+            luckyPersons.add(luckyPerson);
+        });
+        log.info("特别奖项抽奖：" + award + ",中奖名单：" + luckyPersons);
+        store.specialAward(award, luckyPersons);
+        return ret;
+    }
+
+    /**
+     * 替换中奖名单
+     * @param award
+     * @param beforePhone
+     * @return
+     */
+    public Map<Long, String> replaced(Object award, Long beforePhone) {
+        Map<Long, Person> personMap = store.getUnselectedPerson();
+
+        Map<Long, Integer> weightMap = new HashMap<>();
+        if(award instanceof Integer){
+            int settingLevel = (int) award;
+            // 设置当前抽奖者名单
+            personMap.values().stream().filter(person -> {
+                // 过滤设置了指定级别人员名单
+                int level = person.getLevel();
+                // 权重小于0的即为不参与抽奖的
+                return person.getWeight() > 0 && (level == -1 || level == settingLevel);
+            }).forEach(person -> weightMap.put(person.getPhone(),
+                    // 设置了指定级别增权重的人员在其它级别使用最低权重
+                    person.getLevel() == settingLevel ? person.getWeight() :
+                            (person.getLevel() == -1 ? person.getWeight() : 1)
+            ));
+        }
+        else{
+            personMap.values().forEach(person -> weightMap.put(person.getPhone(), 1));
+        }
+
+        if(weightMap.isEmpty()){
+           throw new RuntimeException("找不到对应的奖项");
+        }
+        WeightRandom<Long, Integer> weight = new WeightRandom<>();
+        Map<Long, String> ret = new HashMap<>();
+        Set<Person> luckyPersons = new HashSet<>();
+        weight.random(weightMap, 1).forEach(phone -> {
+            Person luckyPerson = personMap.get(phone);
+            ret.put(phone, luckyPerson.getName());
+            luckyPersons.add(luckyPerson);
+        });
+        log.info("替换中奖者:"+beforePhone+"，当前奖项：" + award + ",中奖名单：" + luckyPersons);
+        luckyPersons.forEach(person -> store.replaced(beforePhone,person.getPhone()));
+        return ret;
+    }
+
+    public Map<Long, String> getLuckyPersonByLevel(Object award) {
+        Map<Long, String> ret = new HashMap<>();
+        store.getLuckyPerson(award).forEach(person -> {
             ret.put(person.getPhone(), person.getName());
         });
         return ret;
@@ -79,9 +149,9 @@ public class LotteryService {
         return ret;
     }
 
-    public Map<Integer, Map<Long, String>> getLuckyPerson() {
-        Map<Integer, Map<Long, String>> ret = new HashMap<>();
-        Map<Integer, Set<Person>> luckyPerson = store.getLuckyPerson();
+    public Map<String, Map<Long, String>> getLuckyPerson() {
+        Map<String, Map<Long, String>> ret = new HashMap<>();
+        Map<String, Set<Person>> luckyPerson = store.getLuckyPerson();
         luckyPerson.keySet().forEach(level -> {
             Map<Long, String> personInfo = new HashMap<>();
             luckyPerson.get(level).forEach(person -> {

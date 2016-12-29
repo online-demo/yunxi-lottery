@@ -37,4 +37,22 @@ public class PageController {
         }
         return "/setting";
     }
+
+    @RequestMapping("/award")
+    public String award(
+            @RequestParam(value = "type",defaultValue = "1",required = false) Integer type,
+            @RequestParam(value = "award") String award,
+            @RequestParam(value = "num",defaultValue = "1",required = false) Integer num,
+            @RequestParam(value = "phone",required = false) Long phone,
+            @RequestParam(value = "name",required = false,defaultValue = "") String name,
+            Model model) {
+        model.addAttribute("type",type);
+        model.addAttribute("award",award);
+        model.addAttribute("num",num);
+        model.addAttribute("phone",phone);
+        model.addAttribute("name",name);
+        return "/award";
+    }
+
+
 }
