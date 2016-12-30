@@ -274,8 +274,25 @@ function Lottery() {
         });
     };
 
+    function resetBodyCss(){
+        var bl = $(window).width()/$(window).height();
+        if(bl < 1.5){
+            $("body").removeClass("body-bg").addClass("body43-bg");
+        }
+        else{
+            $("body").removeClass("body43-bg").addClass("body-bg");
+        }
+    }
+    $(window).resize(function() {
+        resetBodyCss();
+    });
+
+    resetBodyCss();
+
     /**
      * 初始化时自动载入
      */
     loadPerson();
+
+
 }

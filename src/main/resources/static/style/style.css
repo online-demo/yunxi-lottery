@@ -21,7 +21,15 @@
 
 .body-bg {
     min-width: 1000px;
-   background-image: url("bg.jpg");
+    background-image: url("bg.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-color: #71080D;
+}
+
+.body43-bg {
+    min-width: 1000px;
+    background-image: url("bg43.jpg");
     background-size: 100%;
     background-repeat: no-repeat;
     background-color: #71080D;

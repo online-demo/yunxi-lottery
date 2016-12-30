@@ -40,13 +40,13 @@ public class PageController {
         return "/main";
     }
 
-    @RequestMapping("/setting")
+    @RequestMapping("/console")
     public String setting(@RequestParam(required = false)String pwd,Model model) {
         model.addAttribute("isManager",false);
         if(!StringUtils.isEmpty(pwd) && pwd.equals("vteam123")){
             model.addAttribute("isManager",true);
         }
-        return "/setting";
+        return "/console";
     }
 
     @RequestMapping("/award")

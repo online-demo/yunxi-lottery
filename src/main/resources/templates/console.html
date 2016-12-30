@@ -3,13 +3,13 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>setting</title>
+    <title>控制台</title>
     <link rel="stylesheet" href="dist/css/bootstrap.min.css"/>
     <script type="text/javascript" src="dist/js/jquery.min.js"></script>
     <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-
+        /*<![CDATA[*/
         $(function () {
 
             var nowProcessData;
@@ -110,9 +110,9 @@
             $("#result").on('click','.btn',function () {
                 var btn = $(this);
                 var person = btn.html().split("-");
-                /*<![CDATA[*/
+
                 window.open("award?type=2&award="+btn.attr('data')+"&phone="+person[1]+"&name="+person[0]);
-                /*]]>*/
+
             });
 
             $("#person").on("click", function () {
@@ -120,6 +120,14 @@
                 $.get("person", {}, function (data) {
                     showPerson(data);
                 })
+            });
+
+            $("#download").on("click", function () {
+                var frame = $("<iframe style='display: none;'/>");
+                frame.appendTo($("body")).attr({ "src": "download", "display": "block" });
+                setTimeout(function () {
+                    frame.remove();
+                }, 3000);
             });
 
               $("#createAward").on("click", function () {
@@ -141,6 +149,7 @@
 
             nowProcess();
         });
+        /*]]>*/
     </script>
 </head>
 <body>
@@ -149,9 +158,9 @@
     <div class="panel-heading"><h1 id="nowLevel"></h1></div>
 
     <div class="panel-body" th:if="${isManager}">
-        <button class="btn btn-success" id="lottery">抽奖</button>
-        <button id="unlottery" class="btn btn-danger">取消上次结果</button>
-        <button id="init" class="btn btn-primary">初始化</button>
+        <button class="btn btn-success" id="lottery"> <span class="glyphicon glyphicon-usd"></span>抽奖</button>
+        <button id="unlottery" class="btn btn-danger"> <span class="glyphicon glyphicon-hand-left"></span>取消上次结果</button>
+        <button id="init" class="btn btn-primary"> <span class="glyphicon glyphicon-refresh"></span>初始化</button>
     </div>
 </div>
 <div class="panel panel-default" th:if="${isManager}">
@@ -163,7 +172,7 @@
             <div class="input-group-addon">数量</div>
             <input class="form-control" type="number" id="num" value="1"  min="1"/>
             <span class="input-group-btn">
-                <button class="btn btn-success" id="createAward">添加</button>
+                <button class="btn btn-success" id="createAward"> <span class="glyphicon glyphicon-thumbs-up"></span>添加</button>
             </span>
         </div>
     </div>
@@ -178,8 +187,9 @@
             <div class="input-group-addon">等级</div>
             <input class="form-control" type="text" id="level"/>
             <span class="input-group-btn">
-                <button class="btn btn-primary" id="luckyPerson" type="button">中奖人员</button>
-                <button class="btn btn-success" id="person">全部人员</button>
+                <button class="btn btn-primary" id="luckyPerson" type="button"><span class="glyphicon glyphicon-user"></span>中奖人员</button>
+                <!--<button class="btn btn-success" id="person">全部人员</button>-->
+                <button class="btn btn-success" id="download"><span class="glyphicon glyphicon-save"></span>下载列表</button>
             </span>
         </div>
     </div>
