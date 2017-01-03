@@ -72,7 +72,7 @@ under the License.
 
     <!-- pluginGroups
      | This is a list of additional group identifiers that will be searched when resolving plugins by their prefix, i.e.
-     | when invoking a command line like "mvn prefix:goal". Maven will automatically add the group identifiers
+     | when invoking a protocol line like "mvn prefix:goal". Maven will automatically add the group identifiers
      | "org.apache.maven.plugins" and "org.codehaus.mojo" if these are not already contained in the list.
      |-->
     <pluginGroups>
@@ -84,7 +84,7 @@ under the License.
 
     <!-- proxies
      | This is a list of proxies which can be used on this machine to connect to the network.
-     | Unless otherwise specified (by system property or command-line switch), the first proxy
+     | Unless otherwise specified (by system property or protocol-line switch), the first proxy
      | specification in this list marked as active will be used.
      |-->
     <proxies>
@@ -178,7 +178,7 @@ under the License.
      | relies on the detection of a system property, either matching a particular value for the property,
      | or merely testing its existence. Profiles can also be activated by JDK version prefix, where a
      | value of '1.4' might activate a profile when the build is executed on a JDK version of '1.4.2_07'.
-     | Finally, the list of active profiles can be specified directly from the command line.
+     | Finally, the list of active profiles can be specified directly from the protocol line.
      |
      | NOTE: For profiles defined in the settings.xml, you are restricted to specifying only artifact
      |       repositories, plugin repositories, and free-form properties to be used as configuration
@@ -189,7 +189,7 @@ under the License.
         <!-- profile
          | Specifies a set of introductions to the build process, to be activated using one or more of the
          | mechanisms described above. For inheritance purposes, and to activate profiles via <activatedProfiles/>
-         | or the command line, profiles have to have an ID that is unique.
+         | or the protocol line, profiles have to have an ID that is unique.
          |
          | An encouraged best practice for profile identification is to use a consistent naming convention
          | for profiles, such as 'env-dev', 'env-test', 'env-production', 'user-jdcasey', 'user-brett', etc.

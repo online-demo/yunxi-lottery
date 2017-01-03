@@ -13,26 +13,31 @@
         var phone = [[${phone}]];
         var name = [[${name}]];
         $(function () {
+            function ready(){
+                if(type == 1 || type == '1') {
+                    var info = "开奖啦！！！";
+                    if(name){
+                        info = name+"给您"+info;
+                    }
+                    lottery.ready(info);
+                }
+            }
+            function go(){
+                if(type == 1 || type == '1'){
+                    lottery.specialLottery(award,num);
+                }
+                else{
+                    lottery.replaced(award,phone);
+                }
+            }
             var lottery = new Lottery();
             $(document).keydown(function (e) {
                 if (!e) e = window.event;
                 if (e.keyCode == 32) {
-                    if(type == 1 || type == '1'){
-                        lottery.specialLottery(award,num);
-                    }
-                    else{
-                        lottery.replaced(award,phone);
-                    }
-
+                    go();
                 }
                 else if (e.keyCode == 13) {
-                    if(type == 1 || type == '1') {
-                        var info = "开奖啦！！！";
-                        if(name){
-                            info = name+"给您"+info;
-                        }
-                        lottery.ready(info);
-                    }
+                    ready();
                 }
                 else if(e.keyCode == 27){
                     window.close();
@@ -40,6 +45,32 @@
             });
             lottery.process.level=award;
             $("#titile").html(lottery.getCnLevel(award));
+
+            var websocket = null;
+
+            if ('WebSocket' in window) {
+                websocket = new WebSocket("ws://localhost/websocket/show");
+            }
+
+            websocket.onmessage = function (event) {
+                switch (event.data) {
+                    case 'READY':
+                        ready();
+                        break;
+                    case 'LOTTERY':
+                        ready();
+                        break;
+                    case 'START':
+                        go();
+                        break;
+                    case 'STOP':
+                        go();
+                        break;
+                }
+            };
+            window.onbeforeunload = function () {
+                websocket.close();
+            };
         });
 
     </script>

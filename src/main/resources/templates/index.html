@@ -29,6 +29,25 @@
                 }
             });
             resetBodyCss();
+            var websocket = null;
+
+            if ('WebSocket' in window) {
+                websocket = new WebSocket("ws://localhost/websocket/show");
+            }
+
+            websocket.onmessage = function (event) {
+                switch (event.data) {
+                    case 'READY':
+                        location.href="index";
+                        break;
+                    case 'LOTTERY':
+                        location.href="main";
+                        break;
+                }
+            };
+            window.onbeforeunload = function () {
+                websocket.close();
+            };
         });
         /*]]>*/
     </script>

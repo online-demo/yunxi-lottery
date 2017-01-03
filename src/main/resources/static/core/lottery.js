@@ -227,17 +227,20 @@ function Lottery() {
         $("#info").html(phone[0] + " " + person[phone[0]]);
         function addLucky() {
             var tPhone = phone[i++];
-            $('#lucky').append(
-                "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>");
-            $("#info").html(tPhone + " " + person[tPhone]);
-
-            if (i >= size) {
+            if (i > size) {
                 clearInterval(t);
                 t = 0;
                 showing = false;
+                $("#info").html("恭喜！！！");
             }
-            console.log("sendSMS:"+tPhone+","+person[tPhone]+","+me.getCnLevel(me.process.level));
-            //me.sendSms(tPhone,person[tPhone],me.getCnLevel(me.process.level));
+            else{
+                $('#lucky').append(
+                    "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>"
+                );
+                $("#info").html(tPhone + " " + person[tPhone]);
+                console.log("sendSMS:"+tPhone+","+person[tPhone]+","+me.getCnLevel(me.process.level));
+                //me.sendSms(tPhone,person[tPhone],me.getCnLevel(me.process.level));
+            }
         }
 
         t = setInterval(addLucky, 1000);

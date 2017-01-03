@@ -24,6 +24,10 @@ public class PageController {
     public String index() {
         return "/index";
     }
+    @RequestMapping("/m")
+    public String show() {
+        return "/control";
+    }
 
     @RequestMapping("/")
     public String welcome() {

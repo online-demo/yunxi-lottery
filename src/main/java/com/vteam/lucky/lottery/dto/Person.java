@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class Person implements Serializable {
     private String name;
     private Long phone;
-    private int level;
-    private int weight;
+    private int level = -1;
+    private int weight = 1;
 
     public Person() {
     }
@@ -20,8 +20,11 @@ public class Person implements Serializable {
         String[] str = csv.split(",");
         this.name = str[0];
         this.phone = Long.valueOf(str[1]);
-        this.level = Integer.valueOf(str[2]);
-        this.weight = Integer.valueOf(str[3]);
+        if (str.length > 2) {
+            this.level = Integer.valueOf(str[2]);
+            this.weight = Integer.valueOf(str[3]);
+        }
+
     }
 
     public Person(String name, Long phone, int level, int weight) {

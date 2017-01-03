@@ -354,7 +354,7 @@ public class Store {
     }
 
     public boolean isDone() {
-        return step.equals(getMaxStep()) && null != lucky.get(step);
+        return step > getMaxStep() || (step.equals(getMaxStep()) && null != lucky.get(step)) ;
     }
 
     public void createSpecial(String award, int num) {
