@@ -6,6 +6,6 @@ package com.vteam.lucky.lottery.server;
  * @since soter 1.0.0
  */
 public enum ClientType {
-        show,
-        operation
+        process,
+        award
 }

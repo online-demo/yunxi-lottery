@@ -188,7 +188,7 @@ function Lottery() {
             var box = $(".box");
             $(".jz").remove();
             $(".zjmd").remove();
-            $(".footer").remove();
+            // $(".footer").remove();
             var result = $('<div class="result"></div>');
             for (var i in data) {
                 result.append("<h2 class='sh4'>" + me.getCnLevel(i) + "</h2>");

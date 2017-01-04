@@ -32,7 +32,7 @@
             var websocket = null;
 
             if ('WebSocket' in window) {
-                websocket = new WebSocket("ws://localhost/websocket/show");
+                websocket = new WebSocket("ws://localhost/websocket/process");
             }
 
             websocket.onmessage = function (event) {

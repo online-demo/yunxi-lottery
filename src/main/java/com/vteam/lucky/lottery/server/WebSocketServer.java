@@ -1,6 +1,5 @@
 package com.vteam.lucky.lottery.server;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -45,7 +44,7 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose() {
-        Helper.removeSession(clientType,session);
+        Helper.removeSession(clientType);
     }
 
     /**
@@ -55,16 +54,6 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        try {
-            session.getBasicRemote().sendText(Command.MSG.name());
-            try {
-                Helper.sendMessage(Command.valueOf(message));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

@@ -16,36 +16,38 @@ public class Helper {
 
 
 
-    private static Map<String,Session> shows = new ConcurrentHashMap<>();
+    private static Session processSession;
 
-    private static Map<String,Session> operations = new ConcurrentHashMap<>();
-
-    private static Map<String,Session> getSessionMap(ClientType type){
-        switch (type) {
-            case show:
-                return shows;
-            case operation:
-                return operations;
-        }
-        throw new RuntimeException("");
-    }
+    private static Session awardSession;
 
     public static void addSession(ClientType type,Session session){
-        getSessionMap(type).put(session.getId(),session);
+        switch (type) {
+            case process:
+                processSession = session;
+                break;
+            case award:
+                awardSession = session;
+                break;
+        }
+
     }
 
-    public static void removeSession(ClientType type,Session session){
-        getSessionMap(type).remove(session.getId());
+    public static void removeSession(ClientType type){
+        switch (type) {
+            case process:
+                processSession = null;
+                break;
+            case award:
+                awardSession = null;
+                break;
+        }
     }
 
     public static void sendMessage(Command command) throws IOException {
-        getSessionMap(ClientType.show).values().forEach(session -> {
-            try {
-                session.getBasicRemote().sendText(command.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        Session session = null == awardSession ? processSession :awardSession;
+        if(null != session){
+            session.getBasicRemote().sendText(command.toString());
+        }
     }
 
 

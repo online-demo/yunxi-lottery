@@ -2,6 +2,8 @@ package com.vteam.lucky.lottery.controller;
 
 import com.vteam.lucky.lottery.core.LotteryService;
 import com.vteam.lucky.lottery.data.Store;
+import com.vteam.lucky.lottery.server.Command;
+import com.vteam.lucky.lottery.server.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,18 @@ public class SettingController {
     public Boolean reset() throws RuntimeException {
         store.reset();
         return true;
+    }
+
+    @ResponseBody
+    @RequestMapping("/control")
+    public String mobileControl(String message){
+        try {
+            Helper.sendMessage(Command.valueOf(message));
+            return Command.MSG.name();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "error";
     }
 
     @ResponseBody

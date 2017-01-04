@@ -49,7 +49,7 @@
             var websocket = null;
 
             if ('WebSocket' in window) {
-                websocket = new WebSocket("ws://localhost/websocket/show");
+                websocket = new WebSocket("ws://localhost/websocket/award");
             }
 
             websocket.onmessage = function (event) {
