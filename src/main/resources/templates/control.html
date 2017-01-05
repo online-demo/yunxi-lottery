@@ -14,18 +14,12 @@
                 $.get('control',{message:command},callback);
             }
 
-            function log(msg){
-                $("#msg").html(msg);
-                console.log(msg);
-            }
-
             function callback(data){
                 switch (data){
                     case 'CONNECTED':
                         break;
                     case 'MSG':
                         ++status;
-                        log(status);
                         if(status >= process.length){
                             status = 0;
                             addSwipeEvent();
@@ -40,8 +34,7 @@
             }
             function addSwipeEvent(){
                 $(document).off();
-                $(document).on("swipeleft",function(){
-                    log('swipeleft');
+                $(document).on("tap",function(){
                     if(status > -1){
                         send(process[status]);
                     }
@@ -49,8 +42,7 @@
             }
             function addClickEvent(){
                 $(document).off();
-                $(document).on("taphold",function(e,d){
-                    log('tap');
+                $(document).on("tap",function(e,d){
                     if(status > -1){
                         send(process[status]);
                     }
@@ -68,7 +60,6 @@
 <!--<div class="center" id="msg">-->
 <!--准备-->
 <!--</div>-->
-<div id="msg">info</div>
 </body>
 
 
