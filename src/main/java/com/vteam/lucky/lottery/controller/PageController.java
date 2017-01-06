@@ -56,6 +56,11 @@ public class PageController {
         return "/console";
     }
 
+    @RequestMapping("/l")
+    public String received() {
+        return "/receive";
+    }
+
     @RequestMapping("/award")
     public String award(
             @RequestParam(value = "type", defaultValue = "1", required = false) Integer type,

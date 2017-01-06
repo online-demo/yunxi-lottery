@@ -1,10 +1,7 @@
-SpringBoot项目
-maven setting文件在根目录
-启动主类:com.vteam.lucky.lottery.ServerMain
-访问UI：localhost/index
-访问逻辑页面：localhost/setting
-数据存储路径配置
-vteam:
-  lottery:
-    data:
-      path: "E:/VTeamLottery/"
+SpringBoot项目<br/>
+maven setting文件在根目录<br/>
+启动主类:com.vteam.lucky.lottery.ServerMain<br/>
+访问主页：localhost<br/>
+控制台：localhost/a<br/>
+移动控制：localhost/m<br/>
+领奖：localhost/l<br/>

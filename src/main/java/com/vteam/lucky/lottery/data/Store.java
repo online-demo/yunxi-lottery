@@ -39,6 +39,8 @@ public class Store {
     // 流程之外的特别中奖人员列表
     private Map<String, Set<Person>> specialLuck = new HashMap<>();
 
+    private Set<Long> received = new HashSet<>();
+
     // 特别奖项设置队列
     private Queue<Special> queue = new LinkedBlockingQueue<>();
 
@@ -86,6 +88,7 @@ public class Store {
         step = Operation.load(step, STEP_TAG);
         lucky = Operation.loadLucky(lucky);
         specialLuck = Operation.loadSpecialLuck(specialLuck);
+        received = Operation.load(received,RECEIVED_TAG);
     }
 
     private String getFileMD5(Path path) {
@@ -123,10 +126,12 @@ public class Store {
         step = 1;
         lucky = new HashMap<>();
         specialLuck = new HashMap<>();
+        received = new HashSet<>();
         queue.clear();
         Operation.save(lucky, LUCKY_TAG);
         Operation.save(specialLuck, SPECIAL_LUCKY_TAG);
         Operation.save(step, STEP_TAG);
+        Operation.save(received,RECEIVED_TAG);
 
     }
 
@@ -363,6 +368,20 @@ public class Store {
 
     public Special getSpecial() {
         return queue.poll();
+    }
+
+    public Set<Long> getReceivedPhone(){
+        return this.received;
+    }
+
+    public void addReceived(Long phone){
+        this.received.add(phone);
+        Operation.save(received,RECEIVED_TAG);
+    }
+
+    public void remReceived(Long phone){
+        this.received.remove(phone);
+        Operation.save(received,RECEIVED_TAG);
     }
 
     private Collection<Integer> getSort(Integer level) {

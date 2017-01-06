@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -48,6 +49,26 @@ public class SettingController {
             e.printStackTrace();
         }
         return "error";
+    }
+
+    @ResponseBody
+    @RequestMapping("/addReceived")
+    public boolean addReceived(Long phone){
+        store.addReceived(phone);
+        return true;
+    }
+
+    @ResponseBody
+    @RequestMapping("/remReceived")
+    public boolean remReceived(Long phone){
+        store.remReceived(phone);
+        return true;
+    }
+
+    @ResponseBody
+    @RequestMapping("/getReceived")
+    public Set<Long> getReceived(){
+        return store.getReceivedPhone();
     }
 
     @ResponseBody

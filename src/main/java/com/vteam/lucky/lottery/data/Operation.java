@@ -25,6 +25,7 @@ public class Operation {
     public static final String LUCKY_TAG = "/lucky";
     public static final String SPECIAL_LUCKY_TAG = "/special_luck";
     public static final String STEP_TAG = "/step";
+    public static final String RECEIVED_TAG = "/received";
 
     private static String dataDir = "E:/VTeamLottery";
 
