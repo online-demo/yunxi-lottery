@@ -57,6 +57,7 @@ function Lottery() {
                 lottery(stopLoop);
             }
         }
+        me.ready();
     };
 
     /**
