@@ -18,9 +18,9 @@ import java.util.Set;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * @author li.cheng
- * @version 1.0.0 2016年12月17日
- * @since soter 1.0.0
+ * @author 无双老师【云析学院】
+ * @version 1.0.0 2019年12月17日
+ * @since  1.0.0
  */
 @Controller
 public class SettingController {

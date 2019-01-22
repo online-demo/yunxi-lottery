@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author li.cheng
- * @version 1.0.0 2016年12月22日
- * @since soter 1.0.0
+ * @author 无双老师【云析学院】
+ * @version 1.0.0 2019年12月22日
+ * @since  1.0.0
  */
 public class Operation {
     public static final String PROCESS_TAG = "/process";
