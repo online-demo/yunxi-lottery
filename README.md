@@ -1,6 +1,6 @@
 # 云析抽奖项目<br/>
 maven setting文件在根目录<br/>
-## 启动主类:com.vteam.lucky.lottery.ServerMain<br/>
+## 启动主类:com.yunxi.lucky.lottery.ServerMain<br/>
 ## 访问主页：localhost<br/>
     * 主页按下空格键进入抽奖页<br/>
     * 抽奖页面连续按下空格键继续抽奖<br/>

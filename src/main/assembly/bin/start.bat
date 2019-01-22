@@ -8,7 +8,7 @@ echo %LIB_JARS%
 cd ../
 echo %~dp0
 
-start %CD%\bin\bin\java -server -classpath %CD%\resources;%LIB_JARS% com.vteam.lucky.lottery.ServerMain
+start %CD%\bin\bin\java -server -classpath %CD%\resources;%LIB_JARS% com.yunxi.lucky.lottery.ServerMain
 goto end
 
 :end
