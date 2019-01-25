@@ -27,7 +27,7 @@ import static com.yunxi.lucky.lottery.data.Operation.*;
 public class Store {
     private static final Log log = LogFactory.getLog(Store.class);
 
-    private Map<Long, Person> person = new HashMap<>();
+    private Map<String, Person> person = new HashMap<>();
 
     // {sort}:{person}
     private Map<Integer, Process> process = new HashMap<>();
@@ -243,7 +243,7 @@ public class Store {
      * @param beforePhone
      * @param afterPhone
      */
-    public void replaced(Long beforePhone, Long afterPhone) {
+    public void replaced(Long beforePhone, String afterPhone) {
         Integer replacedSort = null;
         Integer foundSort = null;
         Set<Person> replaced = null;
@@ -341,8 +341,8 @@ public class Store {
      *
      * @return
      */
-    public Map<Long, Person> getUnselectedPerson() {
-        Map<Long, Person> allPerson = new HashMap<>();
+    public Map<String, Person> getUnselectedPerson() {
+        Map<String, Person> allPerson = new HashMap<>();
         allPerson.putAll(person);
         lucky.values().forEach(set -> set.forEach(p -> allPerson.remove(p.getPhone())));
         specialLuck.values().forEach(set -> set.forEach(p -> allPerson.remove(p.getPhone())));

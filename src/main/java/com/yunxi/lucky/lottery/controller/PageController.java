@@ -66,7 +66,7 @@ public class PageController {
             @RequestParam(value = "type", defaultValue = "1", required = false) Integer type,
             @RequestParam(value = "award") String award,
             @RequestParam(value = "num", defaultValue = "1", required = false) Integer num,
-            @RequestParam(value = "phone", required = false) Long phone,
+            @RequestParam(value = "phone", required = false) String phone,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             Model model) {
         model.addAttribute("type", type);

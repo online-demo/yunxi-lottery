@@ -73,7 +73,7 @@ public class SettingController {
     @ResponseBody
     @RequestMapping("/download")
     public void downloadLuckyPerson(HttpServletResponse response) {
-        Map<String, Map<Long, String>> luckyPerson = lotteryService.getLuckyPerson();
+        Map<String, Map<String, String>> luckyPerson = lotteryService.getLuckyPerson();
         try {
             OutputStream os = response.getOutputStream();
             response.setContentType("application/text;charset=UTF-8");

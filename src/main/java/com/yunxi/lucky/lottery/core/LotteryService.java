@@ -29,10 +29,10 @@ public class LotteryService {
      *
      * @return 手机号:姓名
      */
-    public Map<Long, String> lottery() throws RuntimeException {
-        Map<Long, Person> personMap = store.getUnselectedPerson();
+    public Map<String, String> lottery() throws RuntimeException {
+        Map<String, Person> personMap = store.getUnselectedPerson();
 
-        Map<Long, Integer> weightMap = new HashMap<>();
+        Map<String, Integer> weightMap = new HashMap<>();
 
         Process process = store.getProcess();
 
@@ -48,8 +48,8 @@ public class LotteryService {
                         (person.getLevel() == -1 ? person.getWeight() : 1)
         ));
 
-        WeightRandom<Long, Integer> weight = new WeightRandom<>();
-        Map<Long, String> ret = new HashMap<>();
+        WeightRandom<String, Integer> weight = new WeightRandom<>();
+        Map<String, String> ret = new HashMap<>();
         Set<Person> luckyPersons = new HashSet<>();
         weight.random(weightMap, process.getNum()).forEach(phone -> {
             Person luckyPerson = personMap.get(phone);
@@ -69,13 +69,13 @@ public class LotteryService {
      * @return
      * @throws RuntimeException
      */
-    public Map<Long, String> specialLottery(String award, int num) throws RuntimeException {
-        Map<Long, Person> personMap = store.getUnselectedPerson();
-        Map<Long, Integer> weightMap = new HashMap<>();
+    public Map<String, String> specialLottery(String award, int num) throws RuntimeException {
+        Map<String, Person> personMap = store.getUnselectedPerson();
+        Map<String, Integer> weightMap = new HashMap<>();
         // 设置当前抽奖者名单,权重相等
         personMap.values().forEach(person -> weightMap.put(person.getPhone(), 1));
-        WeightRandom<Long, Integer> weight = new WeightRandom<>();
-        Map<Long, String> ret = new HashMap<>();
+        WeightRandom<String, Integer> weight = new WeightRandom<>();
+        Map<String, String> ret = new HashMap<>();
         Set<Person> luckyPersons = new HashSet<>();
         weight.random(weightMap, num).forEach(phone -> {
             Person luckyPerson = personMap.get(phone);
@@ -94,10 +94,10 @@ public class LotteryService {
      * @param beforePhone
      * @return
      */
-    public Map<Long, String> replaced(Object award, Long beforePhone) {
-        Map<Long, Person> personMap = store.getUnselectedPerson();
+    public Map<String, String> replaced(Object award, Long beforePhone) {
+        Map<String, Person> personMap = store.getUnselectedPerson();
 
-        Map<Long, Integer> weightMap = new HashMap<>();
+        Map<String, Integer> weightMap = new HashMap<>();
         if (award instanceof Integer) {
             int settingLevel = (int) award;
             // 设置当前抽奖者名单
@@ -118,8 +118,8 @@ public class LotteryService {
         if (weightMap.isEmpty()) {
             throw new RuntimeException("找不到对应的奖项");
         }
-        WeightRandom<Long, Integer> weight = new WeightRandom<>();
-        Map<Long, String> ret = new HashMap<>();
+        WeightRandom<String, Integer> weight = new WeightRandom<>();
+        Map<String, String> ret = new HashMap<>();
         Set<Person> luckyPersons = new HashSet<>();
         weight.random(weightMap, 1).forEach(phone -> {
             Person luckyPerson = personMap.get(phone);
@@ -131,27 +131,27 @@ public class LotteryService {
         return ret;
     }
 
-    public Map<Long, String> getLuckyPersonByLevel(Object award) {
-        Map<Long, String> ret = new HashMap<>();
+    public Map<String, String> getLuckyPersonByLevel(Object award) {
+        Map<String, String> ret = new HashMap<>();
         store.getLuckyPerson(award).forEach(person -> {
             ret.put(person.getPhone(), person.getName());
         });
         return ret;
     }
 
-    public Map<Long, String> getPerson() {
-        Map<Long, String> ret = new HashMap<>();
+    public Map<String, String> getPerson() {
+        Map<String, String> ret = new HashMap<>();
         store.getAllPerson().forEach(person -> {
             ret.put(person.getPhone(), person.getName());
         });
         return ret;
     }
 
-    public Map<String, Map<Long, String>> getLuckyPerson() {
-        Map<String, Map<Long, String>> ret = new HashMap<>();
+    public Map<String, Map<String, String>> getLuckyPerson() {
+        Map<String, Map<String, String>> ret = new HashMap<>();
         Map<String, Set<Person>> luckyPerson = store.getLuckyPerson();
         luckyPerson.keySet().forEach(level -> {
-            Map<Long, String> personInfo = new HashMap<>();
+            Map<String, String> personInfo = new HashMap<>();
             luckyPerson.get(level).forEach(person -> {
                 personInfo.put(person.getPhone(), person.getName());
             });

@@ -103,7 +103,7 @@ public class Operation {
         Map<String, Object> map = (Map<String, Object>) obj;
         Person person = new Person();
         person.setName(map.get("name").toString());
-        person.setPhone((long) map.get("phone"));
+        person.setPhone((String) map.get("phone"));
         person.setLevel((int) map.get("level"));
         person.setWeight((int) map.get("weight"));
         return person;

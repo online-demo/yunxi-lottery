@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class Person implements Serializable {
     private String name;
-    private Long phone;
+    private String phone;
     private int level = -1;
     private int weight = 1;
 
@@ -19,7 +19,7 @@ public class Person implements Serializable {
     public Person(String csv) throws Exception {
         String[] str = csv.split(",");
         this.name = str[0];
-        this.phone = Long.valueOf(str[1]);
+        this.phone = str[1];
         if (str.length > 2) {
             this.level = Integer.valueOf(str[2]);
             this.weight = Integer.valueOf(str[3]);
@@ -27,7 +27,7 @@ public class Person implements Serializable {
 
     }
 
-    public Person(String name, Long phone, int level, int weight) {
+    public Person(String name, String phone, int level, int weight) {
         this.name = name;
         this.phone = phone;
         this.level = level;
@@ -42,11 +42,11 @@ public class Person implements Serializable {
         this.name = name;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

@@ -197,13 +197,13 @@ function Lottery() {
                 if (Object.keys(persons).length < 10) {
                     var centerSpan = $('<div class="result" style="text-align: center"></div>');
                     for (var j in persons) {
-                        centerSpan.append('<span title="' + j + '" class="person">' + persons[j] + '</span>');
+                        centerSpan.append('<span title="' + j + '" class="person">' + persons[j] + j + '</span>');
                     }
                     result.append(centerSpan);
                 }
                 else {
                     for (var j in persons) {
-                        result.append('<span title="' + j + '" class="person">' + persons[j] + '</span>');
+                        result.append('<span title="' + j + '" class="person">' + persons[j] + j + '</span>');
                     }
                 }
 
@@ -236,7 +236,7 @@ function Lottery() {
             }
             else{
                 $('#lucky').append(
-                    "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + "</span>"
+                    "<span class='phone masked LuckyPerson' title='" + tPhone + "' style='margin-right: 10px;font-size: 30px;'>" + person[tPhone] + (tPhone) + "</span>"
                 );
                 $("#info").html(tPhone + " " + person[tPhone]);
                 console.log("sendSMS:"+tPhone+","+person[tPhone]+","+me.getCnLevel(me.process.level));

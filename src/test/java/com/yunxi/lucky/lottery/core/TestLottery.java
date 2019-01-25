@@ -51,7 +51,7 @@ public class TestLottery {
         Integer maxStep = store.getMaxStep();
         IntStream.rangeClosed(1, maxStep).forEach(i -> {
             int level = store.getProcess().getLevel();
-            Map<Long, String> lottery = lotteryService.lottery();
+            Map<String, String> lottery = lotteryService.lottery();
             lottery.values().forEach(name -> {
                 List<Map<String, Object>> maps = data.get(name);
                 if (null == maps) {
@@ -114,8 +114,8 @@ public class TestLottery {
     public void changeLuckyPerson(){
 //        init();
 //        lottery(1);
-        store.replaced(15204767993l,15702783372l);
-        store.replaced(13707585579l,15702807285l);
+        store.replaced(15204767993l,"15702783372l");
+        store.replaced(13707585579l,"15702807285l");
     }
 
     @Test

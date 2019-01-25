@@ -30,7 +30,7 @@ public class LotteryController {
 
     @ResponseBody
     @RequestMapping("/lottery")
-    public Map<Long, String> lottery() {
+    public Map<String, String> lottery() {
         try {
             return lotteryService.lottery();
         } catch (RuntimeException e) {
@@ -40,7 +40,7 @@ public class LotteryController {
 
     @ResponseBody
     @RequestMapping("/specialLottery")
-    public Map<Long, String> specialLottery(
+    public Map<String, String> specialLottery(
             @RequestParam(value = "award", required = false) String award,
             @RequestParam(value = "num", defaultValue = "1", required = false) Integer num
     ) {
@@ -63,7 +63,7 @@ public class LotteryController {
 
     @ResponseBody
     @RequestMapping("/replaced")
-    public Map<Long, String> replaced(
+    public Map<String, String> replaced(
             @RequestParam(value = "award") String award,
             @RequestParam(value = "phone") Long phone
     ) {
@@ -89,20 +89,20 @@ public class LotteryController {
 
     @ResponseBody
     @RequestMapping("/person")
-    public Map<Long, String> getAllPerson() {
+    public Map<String, String> getAllPerson() {
         return lotteryService.getPerson();
     }
 
     @ResponseBody
     @RequestMapping("/lucky/{level}")
-    public Map<Long, String> getLuckyPersonByLevel(
+    public Map<String, String> getLuckyPersonByLevel(
             @PathVariable(value = "level") String level) {
         return lotteryService.getLuckyPersonByLevel(Strings.isNumeric(level) ? Integer.valueOf(level) : level);
     }
 
     @ResponseBody
     @RequestMapping("/lucky")
-    public Map<String, Map<Long, String>> getLuckyPerson() {
+    public Map<String, Map<String, String>> getLuckyPerson() {
         return lotteryService.getLuckyPerson();
     }
 
